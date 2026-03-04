@@ -1,0 +1,24 @@
+:root {
+    --bg: #06341e;
+    --accent: #53100c;
+    --accent2: #f1d2a1;
+    --text: #808847;
+    --muted: #2D4C39;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: system-ui, sans-serif;
+
+    background-color: var(--bg);
+    background-size: cover;
+    background-position: center;
+
+    color: var(--text);
+}
