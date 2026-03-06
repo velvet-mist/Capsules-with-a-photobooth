@@ -1,24 +1,10 @@
 :root {
-    --bg: #06341e;
-    --accent: #53100c;
-    --accent2: #f1d2a1;
-    --text: #808847;
-    --muted: #2D4C39;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    min-height: 100vh;
-    font-family: system-ui, sans-serif;
-
-    background-color: var(--bg);
-    background-size: cover;
-    background-position: center;
-
-    color: var(--text);
+  --bg-start: #07311f;
+  --bg-end: #113f2a;
+  --bg-glow: rgba(241, 210, 161, 0.24);
+  --panel-bg: rgba(18, 46, 32, 0.68);
+  --panel-border: rgba(241, 210, 161, 0.34);
+  --chip-bg: rgba(241, 210, 161, 0.14);
+  --text: #edf2e0;
+  --muted: #cbd8b2;
 }

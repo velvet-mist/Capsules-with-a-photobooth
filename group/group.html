@@ -1,14 +1,44 @@
 <!DOCTYPE html>
-<head><meta charset="UTF-8">
-    <title>A simple capsule</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="group.css"></head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Us | Capsule</title>
+  <link rel="stylesheet" href="../subpage.css" />
+  <link rel="stylesheet" href="group.css" />
+</head>
 <body>
-    <section id="Us" class="card-content hidden"></section>
-    <button class="back-btn" onclick="goBack()">← Back</button>
+  <main class="page">
+    <header class="page-header">
+      <button class="back-btn" onclick="goBack()">Back</button>
+      <section class="hero">
+        <p class="kicker">Memory Capsule</p>
+        <h1>Us</h1>
+        <p class="tagline">Our shared space for photos, songs, and keepsakes.</p>
+      </section>
+    </header>
 
-    <iframe data-testid="embed-iframe" style="border-radius:12px" 
-    src="https://open.spotify.com/embed/track/32YA3PItSKjcNONrp1p4Y5?utm_source=generator" width="50%" height="200" 
-    frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-    loading="lazy"></iframe>
-    </section></body>
+    <section class="content-grid">
+      <section class="card photobooth-section">
+        <h2>Photobooth</h2>
+        <p>Add photos here, then drag and drop them into your photobooth template.</p>
+        <a class="photobooth-btn" href="../photobooth/index.html?person=us&caption=Us%20Booth">Open Photobooth</a>
+      </section>
+
+      <section class="card music-section">
+        <h2>Now Playing</h2>
+        <p>A track for this page.</p>
+        <iframe
+          class="music-player"
+          src="https://open.spotify.com/embed/track/32YA3PItSKjcNONrp1p4Y5?utm_source=generator"
+          height="200"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy">
+        </iframe>
+      </section>
+    </section>
+  </main>
+
+  <script src="../script.js"></script>
+</body>
+</html>

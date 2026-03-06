@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photobooth Builder</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="panel controls">
+      <div class="panel-head">
+        <h1>Photobooth Studio</h1>
+        <p id="personLabel" class="muted"></p>
+      </div>
+
+      <div class="control-group">
+        <p class="label">Template</p>
+        <div id="templatePicker" class="template-picker"></div>
+      </div>
+
+      <div class="control-group">
+        <label class="label" for="captionInput">Caption</label>
+        <input id="captionInput" type="text" placeholder="Photobooth" />
+      </div>
+
+      <div class="control-group">
+        <p class="label">Add Photos</p>
+        <label for="photoInput" class="dropzone">
+          <span>Drop photos here or click to upload</span>
+          <input id="photoInput" type="file" accept="image/*" multiple />
+        </label>
+        <p id="photoCount" class="muted">0 photos loaded</p>
+      </div>
+
+      <div class="control-group">
+        <p class="label">Photo Library</p>
+        <p class="hint">Drag a photo into any frame. Click a photo to auto-place it.</p>
+        <div id="photoBank" class="photo-bank"></div>
+      </div>
+
+      <div class="actions">
+        <button id="clearFramesBtn" type="button" class="ghost-btn">Clear Frames</button>
+        <button id="exportBtn" type="button" class="primary-btn">Export PNG</button>
+      </div>
+    </section>
+
+    <section class="panel previewWrap">
+      <div id="booth" class="booth strip">
+        <div class="frame" data-frame="0"></div>
+        <div class="frame" data-frame="1"></div>
+        <div class="frame" data-frame="2"></div>
+        <div class="frame" data-frame="3"></div>
+        <div id="caption" class="caption">Photobooth</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
