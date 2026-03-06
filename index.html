@@ -1,34 +1,108 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>A simple capsule</title>
+    <title>Thoda Dheeme Capsule</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <h1> Welcome Thoda Dheeme</h1>
-    <h2>Please Thoda dheeme baat karna</h2>
-    <h3>This is something special for you</h3>
 </head>
 <body>
-<section id="cardGrid" class="card-grid">
-    <a href="vedikaa/vedikaa.html" class="card">
-        <span class="card-name">Vedikaa</span>
-    </a>
-    <a href="kasis/kasis.html" class="card">
-        <span class="card-name">Kasis</span>
-    </a>
-    <a href="amishe/amishe.html" class="card">
-        <span class="card-name">Amishe</span>
-    </a>
-    <a href="aahana/aahana.html" class="card">
-        <span class="card-name">Aahana</span>
-    </a>
-    <a href="group/group.html" class="card">
-        <span class="card-name">Us</span>
-    </a>
-    
-</section>
+    <main class="home">
+        <section class="hero">
+            <p class="kicker">Digital Gift</p>
+            <h1>Welcome, Thoda Dheeme</h1>
+            <p class="subtitle">A small memory capsule with music, notes, photos, and photobooth moments.</p>
+            <div class="hero-actions">
+                <a class="pill-link" href="#cardGrid">Browse Capsules</a>
+                <button id="randomCapsuleBtn" class="pill-link pill-link-button" type="button">Open Random Capsule</button>
+            </div>
+        </section>
 
-<script src="script.js"></script>
+        <section class="info-grid" aria-label="Capsule dashboard">
+            <article class="panel">
+                <p class="panel-kicker">Quick Actions</p>
+                <div class="action-row">
+                    <button id="shuffleCardsBtn" type="button" class="action-btn">Shuffle Cards</button>
+                    <button id="promptBtn" type="button" class="action-btn">Memory Prompt</button>
+                </div>
+                <p id="memoryPrompt" class="memory-prompt">Tap "Memory Prompt" for a tiny throwback idea.</p>
+            </article>
+            <article class="panel">
+                <p class="panel-kicker">Live Capsule Stats</p>
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <p class="stat-label">Capsules</p>
+                        <p id="capsuleCount" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-box">
+                        <p class="stat-label">Today</p>
+                        <p id="todayDate" class="stat-value small">--</p>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <section id="cardGrid" class="card-grid" aria-label="People capsules">
+            <a href="vedikaa/vedikaa.html" class="card">
+                <span class="card-name">Vedikaa</span>
+                <span class="card-meta">Open Capsule</span>
+            </a>
+            <a href="kasis/kasis.html" class="card">
+                <span class="card-name">Kasis</span>
+                <span class="card-meta">Open Capsule</span>
+            </a>
+            <a href="amishe/amishe.html" class="card">
+                <span class="card-name">Amishe</span>
+                <span class="card-meta">Open Capsule</span>
+            </a>
+            <a href="aahana/aahana.html" class="card">
+                <span class="card-name">Aahana</span>
+                <span class="card-meta">Open Capsule</span>
+            </a>
+            <a href="group/group.html" class="card">
+                <span class="card-name">Us</span>
+                <span class="card-meta">Open Capsule</span>
+            </a>
+        </section>
+
+        <section class="memory-jar panel" aria-label="Memory jar">
+            <p class="panel-kicker">Memory Jar</p>
+            <div class="jar-layout">
+                <div class="jar-visual" aria-hidden="true">
+                    <div class="jar-lid"></div>
+                    <div class="jar-glow"></div>
+                </div>
+                <div class="jar-content">
+                    <p class="jar-title">Pick A Surprise Note</p>
+                    <p id="jarNote" class="jar-note">Tap the button to pull one tiny memory note.</p>
+                    <div class="jar-actions">
+                        <button id="revealNoteBtn" type="button" class="action-btn">Reveal Note</button>
+                        <p class="jar-count">Notes opened: <span id="jarCount">0</span></p>
+                    </div>
+                </div>
+            </div>
+            <div id="jarSparkArea" class="jar-spark-area" aria-hidden="true"></div>
+        </section>
+
+        <section class="timeline panel" aria-label="Memory timeline">
+            <p class="panel-kicker">Tiny Timeline</p>
+            <div class="timeline-row">
+                <div class="timeline-item">
+                    <p class="timeline-dot"></p>
+                    <p class="timeline-text">Build the playlist moment</p>
+                </div>
+                <div class="timeline-item">
+                    <p class="timeline-dot"></p>
+                    <p class="timeline-text">Capture a photobooth day</p>
+                </div>
+                <div class="timeline-item">
+                    <p class="timeline-dot"></p>
+                    <p class="timeline-text">Write one note for future-us</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
 </body>
 </html>

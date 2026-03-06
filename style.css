@@ -1,71 +1,358 @@
 :root {
-    --bg: #7b3b1d;
-    --accent: #e87347;
-    --accent2: #f0a065;
-    --text: #f3dbb7;
-    --muted: #85553d;
+    --bg: #4a1f0f;
+    --accent: #c45a2b;
+    --accent2: #de7d41;
+    --text: #f4d8b5;
+    --muted: #7a4328;
+
+    --bg-start: #2d1109;
+    --bg-end: #170904;
+    --glow-a: rgba(196, 90, 43, 0.2);
+    --glow-b: rgba(222, 125, 65, 0.14);
+    --panel: rgba(131, 54, 25, 0.34);
+    --panel-border: rgba(232, 136, 78, 0.34);
+    --card-bg: rgba(112, 45, 22, 0.52);
+    --card-hover: rgba(158, 69, 34, 0.6);
+    --soft-text: #f1cfa6;
 }
 
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
 }
 
 body {
+    margin: 0;
     min-height: 100vh;
-    font-family: system-ui, sans-serif;
-    background-color: var(--bg);
-    background-size: cover;
-    background-position: center;
+    font-family: "Avenir Next", "Segoe UI", sans-serif;
     color: var(--text);
+    background:
+        radial-gradient(circle at 8% 12%, var(--glow-a) 0%, rgba(0, 0, 0, 0) 36%),
+        radial-gradient(circle at 88% 22%, var(--glow-b) 0%, rgba(0, 0, 0, 0) 40%),
+        linear-gradient(145deg, var(--bg-start), var(--bg-end));
+}
+
+.home {
+    width: min(1050px, 100% - 32px);
+    margin: 28px auto 40px;
+    display: grid;
+    gap: 20px;
+}
+
+.hero {
+    border: 1px solid var(--panel-border);
+    border-radius: 24px;
+    padding: 26px;
+    background: var(--panel);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 16px 35px rgba(16, 8, 17, 0.35);
+}
+
+.kicker {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.73rem;
+    color: var(--soft-text);
+}
+
+.hero h1 {
+    margin: 8px 0 0;
+    font-size: clamp(1.9rem, 5vw, 3rem);
+    line-height: 1.1;
+}
+
+.subtitle {
+    margin: 10px 0 0;
+    color: var(--soft-text);
+    max-width: 60ch;
+    line-height: 1.5;
+}
+
+.hero-actions {
+    margin-top: 18px;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pill-link {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    border-radius: 999px;
+    border: 1px solid var(--panel-border);
+    color: var(--text);
+    background: rgba(130, 52, 24, 0.52);
+    padding: 9px 15px;
+    text-decoration: none;
+    font-size: 0.88rem;
+    letter-spacing: 0.03em;
 }
 
-h1 {
-    margin-bottom: 10px;
-    font-size: 2.5rem;
+.pill-link-button {
+    cursor: pointer;
+    font: inherit;
 }
 
-h3 {
-    margin-bottom: 40px;
-    font-weight: normal;
-    opacity: 0.8;
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.panel {
+    border: 1px solid var(--panel-border);
+    border-radius: 18px;
+    padding: 16px;
+    background: rgba(114, 44, 20, 0.46);
+}
+
+.panel-kicker {
+    margin: 0 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.72rem;
+    color: var(--soft-text);
+}
+
+.action-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    border: 1px solid var(--panel-border);
+    background: var(--card-bg);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font: inherit;
+}
+
+.memory-prompt {
+    margin: 12px 0 0;
+    color: var(--soft-text);
+    min-height: 2.4em;
+}
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.stat-box {
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 10px;
+    background: rgba(95, 37, 18, 0.58);
+}
+
+.stat-label {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--soft-text);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.stat-value {
+    margin: 8px 0 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.stat-value.small {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
 }
 
 .card-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    max-width: 800px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
 }
 
 .card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 150px;
-    height: 100px;
-    background-color: var(--accent);
-    color: var(--text);
+    min-height: 130px;
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    padding: 16px;
+    background: var(--card-bg);
     text-decoration: none;
-    border-radius: 15px;
-    font-size: 1.5rem;
-    font-weight: bold;
-    transition: transform 0.2s, background-color 0.2s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: var(--text);
+    display: grid;
+    align-content: space-between;
+    box-shadow: 0 10px 20px rgba(20, 8, 24, 0.22);
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .card:hover {
-    transform: scale(1.05);
-    background-color: var(--accent2);
+    transform: translateY(-3px);
+    background: var(--card-hover);
+    border-color: rgba(255, 233, 211, 0.5);
 }
 
 .card-name {
-    text-align: center;
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.card-meta {
+    color: var(--soft-text);
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.timeline-row {
+    display: grid;
+    gap: 8px;
+}
+
+.timeline-item {
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    gap: 10px;
+    align-items: start;
+}
+
+.timeline-dot {
+    width: 10px;
+    height: 10px;
+    margin: 5px 0 0 2px;
+    border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 12px rgba(240, 160, 101, 0.35);
+}
+
+.timeline-text {
+    margin: 0;
+    color: var(--soft-text);
+    line-height: 1.45;
+}
+
+.memory-jar {
+    position: relative;
+    overflow: hidden;
+}
+
+.jar-layout {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 14px;
+    align-items: center;
+}
+
+.jar-visual {
+    width: 96px;
+    height: 110px;
+    margin: 0 auto;
+    border: 2px solid rgba(241, 207, 166, 0.36);
+    border-top: none;
+    border-radius: 0 0 24px 24px;
+    position: relative;
+    background: linear-gradient(180deg, rgba(222, 125, 65, 0.22), rgba(74, 31, 15, 0.18));
+}
+
+.jar-lid {
+    position: absolute;
+    top: -12px;
+    left: 7px;
+    width: 80px;
+    height: 12px;
+    border-radius: 8px;
+    background: #8f431f;
+    border: 1px solid rgba(241, 207, 166, 0.3);
+}
+
+.jar-glow {
+    position: absolute;
+    width: 58px;
+    height: 58px;
+    left: 19px;
+    top: 28px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(222, 125, 65, 0.52), rgba(222, 125, 65, 0));
+    animation: pulseJar 2.2s ease-in-out infinite;
+}
+
+.jar-title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.jar-note {
+    margin: 10px 0 0;
+    color: var(--soft-text);
+    min-height: 2.6em;
+    line-height: 1.45;
+}
+
+.jar-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.jar-count {
+    margin: 0;
+    color: var(--soft-text);
+    font-size: 0.9rem;
+}
+
+.jar-spark-area {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.jar-spark {
+    position: absolute;
+    bottom: 32px;
+    left: var(--spark-left, 50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 8px rgba(222, 125, 65, 0.55);
+    animation: sparkUp 850ms ease-out forwards;
+}
+
+@keyframes pulseJar {
+    0%, 100% { transform: scale(0.95); opacity: 0.72; }
+    50% { transform: scale(1.08); opacity: 1; }
+}
+
+@keyframes sparkUp {
+    0% { transform: translateY(0) scale(0.95); opacity: 1; }
+    100% { transform: translateY(-90px) scale(0.4); opacity: 0; }
+}
+
+@media (max-width: 680px) {
+    .home {
+        width: min(1050px, 100% - 20px);
+        margin-top: 16px;
+    }
+
+    .hero {
+        padding: 18px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .jar-layout {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+    }
 }

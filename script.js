@@ -100,3 +100,100 @@ function initPhotoboothUploadBridge() {
 }
 
 initPhotoboothUploadBridge();
+
+function initHomePageFeatures() {
+    const cardGrid = document.querySelector("#cardGrid");
+    if (!cardGrid) return;
+
+    const cards = () => Array.from(cardGrid.querySelectorAll(".card"));
+    const randomCapsuleBtn = document.querySelector("#randomCapsuleBtn");
+    const shuffleCardsBtn = document.querySelector("#shuffleCardsBtn");
+    const promptBtn = document.querySelector("#promptBtn");
+    const memoryPrompt = document.querySelector("#memoryPrompt");
+    const capsuleCount = document.querySelector("#capsuleCount");
+    const todayDate = document.querySelector("#todayDate");
+    const revealNoteBtn = document.querySelector("#revealNoteBtn");
+    const jarNote = document.querySelector("#jarNote");
+    const jarCount = document.querySelector("#jarCount");
+    const jarSparkArea = document.querySelector("#jarSparkArea");
+
+    const prompts = [
+        "Pick one song that reminds you of everyone in this gift.",
+        "Write one line about a moment you never want to forget.",
+        "Open a random capsule and add one new photo today.",
+        "Which person here made you laugh the most this month?",
+        "Create a tiny voice note for your future self."
+    ];
+    const jarNotes = [
+        "One old photo. One old song. One full smile.",
+        "Remember the day plans changed but the fun did not?",
+        "Save one random voice note today for future-you.",
+        "A tiny memory can still hold a whole evening.",
+        "Revisit one message thread and pick your favorite line.",
+        "If this moment had a soundtrack, what would play first?"
+    ];
+    const jarCountKey = "home:memory-jar-count";
+
+    if (capsuleCount) {
+        capsuleCount.textContent = String(cards().length);
+    }
+
+    if (todayDate) {
+        todayDate.textContent = new Intl.DateTimeFormat("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }).format(new Date());
+    }
+
+    if (randomCapsuleBtn) {
+        randomCapsuleBtn.addEventListener("click", () => {
+            const list = cards();
+            if (!list.length) return;
+            const target = list[Math.floor(Math.random() * list.length)];
+            window.location.href = target.href;
+        });
+    }
+
+    if (shuffleCardsBtn) {
+        shuffleCardsBtn.addEventListener("click", () => {
+            const shuffled = cards().sort(() => Math.random() - 0.5);
+            shuffled.forEach((card) => cardGrid.appendChild(card));
+        });
+    }
+
+    if (promptBtn && memoryPrompt) {
+        promptBtn.addEventListener("click", () => {
+            const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+            memoryPrompt.textContent = randomPrompt;
+        });
+    }
+
+    if (jarCount) {
+        jarCount.textContent = localStorage.getItem(jarCountKey) || "0";
+    }
+
+    if (revealNoteBtn && jarNote) {
+        revealNoteBtn.addEventListener("click", () => {
+            const randomNote = jarNotes[Math.floor(Math.random() * jarNotes.length)];
+            jarNote.textContent = randomNote;
+
+            const current = Number(localStorage.getItem(jarCountKey) || "0") + 1;
+            localStorage.setItem(jarCountKey, String(current));
+            if (jarCount) jarCount.textContent = String(current);
+
+            if (jarSparkArea) {
+                for (let i = 0; i < 8; i += 1) {
+                    const spark = document.createElement("span");
+                    spark.className = "jar-spark";
+                    spark.style.setProperty("--spark-left", `${12 + Math.random() * 76}%`);
+                    spark.style.animationDelay = `${Math.random() * 120}ms`;
+                    jarSparkArea.appendChild(spark);
+                    setTimeout(() => spark.remove(), 900);
+                }
+            }
+        });
+    }
+}
+
+initHomePageFeatures();

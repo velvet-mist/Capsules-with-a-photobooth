@@ -95,6 +95,106 @@ body {
   line-height: 1.4;
 }
 
+.note-input,
+.note-list {
+  width: 100%;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  padding: 10px 12px;
+  font: inherit;
+}
+
+.note-input {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.note-list {
+  min-height: 90px;
+}
+
+.media-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+}
+
+.media-slot,
+.video-slot {
+  border: 1px dashed var(--panel-border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  text-align: center;
+  font-size: 0.86rem;
+  padding: 10px;
+}
+
+.media-slot {
+  aspect-ratio: 1 / 1;
+}
+
+.video-slot {
+  min-height: 200px;
+}
+
+.prompt-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.prompt-list li {
+  line-height: 1.4;
+}
+
+.timeline {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.timeline-item {
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.timeline-item .year {
+  display: block;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.timeline-item .event {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.wish-box {
+  width: 100%;
+  min-height: 120px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  padding: 10px 12px;
+  font: inherit;
+  resize: vertical;
+}
+
 .photobooth-upload {
   display: block;
   margin-top: 8px;
