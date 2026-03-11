@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Thoda Dheeme Capsule</title>
+    <title> Capsule</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -10,7 +10,7 @@
     <main class="home">
         <section class="hero">
             <p class="kicker">Digital Gift</p>
-            <h1>Welcome, Thoda Dheeme</h1>
+            <h1>Welcome</h1>
             <p class="subtitle">A small memory capsule with music, notes, photos, and photobooth moments.</p>
             <div class="hero-actions">
                 <a class="pill-link" href="#cardGrid">Browse Capsules</a>
@@ -42,25 +42,40 @@
             </article>
         </section>
 
+        <section class="panel create-capsule-panel" aria-label="Create capsule">
+            <p class="panel-kicker">Create Capsule</p>
+            <form id="createCapsuleForm" class="create-capsule-form">
+                <input
+                    id="capsuleNameInput"
+                    type="text"
+                    placeholder="Capsule name (example: Riya)"
+                    required
+                />
+                <input id="capsulePhotoInput" type="file" accept="image/*" required />
+                <button type="submit" class="action-btn">Add Capsule</button>
+            </form>
+            <p id="createCapsuleMsg" class="create-capsule-msg">Add a name and photo to create a new capsule card.</p>
+        </section>
+
         <section id="cardGrid" class="card-grid" aria-label="People capsules">
             <a href="vedikaa/vedikaa.html" class="card">
-                <span class="card-name">Vedikaa</span>
+                <span class="card-name">1</span>
                 <span class="card-meta">Open Capsule</span>
             </a>
             <a href="kasis/kasis.html" class="card">
-                <span class="card-name">Kasis</span>
+                <span class="card-name">2</span>
                 <span class="card-meta">Open Capsule</span>
             </a>
             <a href="amishe/amishe.html" class="card">
-                <span class="card-name">Amishe</span>
+                <span class="card-name">3</span>
                 <span class="card-meta">Open Capsule</span>
             </a>
             <a href="aahana/aahana.html" class="card">
-                <span class="card-name">Aahana</span>
+                <span class="card-name">4</span>
                 <span class="card-meta">Open Capsule</span>
             </a>
             <a href="group/group.html" class="card">
-                <span class="card-name">Us</span>
+                <span class="card-name">5</span>
                 <span class="card-meta">Open Capsule</span>
             </a>
         </section>

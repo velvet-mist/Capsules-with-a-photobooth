@@ -19,6 +19,35 @@
         <div id="templatePicker" class="template-picker"></div>
       </div>
 
+      <div class="control-group auth-card">
+        <p class="label">Account & Cloud</p>
+        <input id="authName" type="text" placeholder="Full name (optional)" />
+        <input id="authEmail" type="email" placeholder="Email address" autocomplete="email" />
+        <input
+          id="authPassword"
+          type="password"
+          placeholder="Password (min 8 chars)"
+          autocomplete="current-password"
+        />
+        <input id="authTokenInput" type="text" placeholder="Paste verification/reset token" />
+        <input
+          id="newPasswordInput"
+          type="password"
+          placeholder="New password for reset"
+          autocomplete="new-password"
+        />
+        <div class="auth-actions">
+          <button id="signupBtn" type="button" class="ghost-btn">Create Account</button>
+          <button id="loginBtn" type="button" class="primary-btn">Sign In</button>
+          <button id="logoutBtn" type="button" class="ghost-btn">Sign Out</button>
+          <button id="resendVerifyBtn" type="button" class="ghost-btn">Send Verify Link</button>
+          <button id="requestResetBtn" type="button" class="ghost-btn">Send Reset Link</button>
+          <button id="verifyTokenBtn" type="button" class="ghost-btn">Verify Token</button>
+          <button id="resetPasswordBtn" type="button" class="ghost-btn">Reset Password</button>
+        </div>
+        <p id="authStatus" class="muted"></p>
+      </div>
+
       <div class="control-group">
         <label class="label" for="captionInput">Caption</label>
         <input id="captionInput" type="text" placeholder="Photobooth" />
@@ -42,7 +71,23 @@
       <div class="actions">
         <button id="clearFramesBtn" type="button" class="ghost-btn">Clear Frames</button>
         <button id="exportBtn" type="button" class="primary-btn">Export PNG</button>
+        <button id="saveProjectBtn" type="button" class="ghost-btn">Save Project</button>
+        <button id="loadProjectBtn" type="button" class="ghost-btn">Load Project</button>
+        <button id="shareBtn" type="button" class="primary-btn">Share PNG</button>
+        <button id="saveCloudBtn" type="button" class="ghost-btn">Save Online</button>
+        <button id="copyLinkBtn" type="button" class="primary-btn">Copy Share Link</button>
       </div>
+      <div class="control-group">
+        <p class="label">Your Saved Booths</p>
+        <div class="cloud-actions">
+          <select id="projectSelect" class="project-select">
+            <option value="">Choose a saved booth</option>
+          </select>
+          <button id="loadCloudBtn" type="button" class="ghost-btn">Load</button>
+        </div>
+      </div>
+      <input id="projectInput" type="file" accept="application/json,.json" hidden />
+      <p id="statusMsg" class="muted status-msg" aria-live="polite"></p>
     </section>
 
     <section class="panel previewWrap">

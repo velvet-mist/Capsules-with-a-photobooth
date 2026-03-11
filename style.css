@@ -181,7 +181,7 @@ body {
     border: 1px solid var(--panel-border);
     border-radius: 16px;
     padding: 16px;
-    background: var(--card-bg);
+    background-color: var(--card-bg);
     text-decoration: none;
     color: var(--text);
     display: grid;
@@ -192,8 +192,112 @@ body {
 
 .card:hover {
     transform: translateY(-3px);
-    background: var(--card-hover);
+    background-color: var(--card-hover);
     border-color: rgba(255, 233, 211, 0.5);
+}
+
+.create-capsule-panel {
+    display: grid;
+    gap: 10px;
+    padding: 18px;
+}
+
+.create-capsule-form {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.create-capsule-form input {
+    width: 100%;
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    background: rgba(85, 34, 17, 0.52);
+    color: var(--text);
+    font: inherit;
+    padding: 9px 10px;
+}
+
+.create-capsule-msg {
+    margin: 0;
+    color: var(--soft-text);
+    font-size: 0.9rem;
+}
+
+.manage-capsule-list {
+    display: grid;
+    gap: 8px;
+    max-height: 220px;
+    overflow: auto;
+    padding-right: 4px;
+}
+
+.manage-capsule-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 8px;
+    align-items: center;
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 8px;
+    background: rgba(55, 22, 11, 0.42);
+}
+
+.manage-capsule-input {
+    width: 100%;
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    background: rgba(85, 34, 17, 0.52);
+    color: var(--text);
+    font: inherit;
+    padding: 9px 10px;
+}
+
+.manage-btn {
+    border: 1px solid var(--panel-border);
+    background: var(--card-bg);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 8px 10px;
+    cursor: pointer;
+    font: inherit;
+    white-space: nowrap;
+}
+
+.manage-btn.danger {
+    border-color: rgba(255, 120, 120, 0.45);
+    color: #ffd8d8;
+    background: rgba(130, 20, 20, 0.34);
+}
+
+.card.custom-capsule {
+    gap: 10px;
+    align-content: start;
+    background-image: none !important;
+    padding: 12px;
+}
+
+.card-thumb {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: 12px;
+    border: 1px solid var(--panel-border);
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.card-thumb.empty {
+    background-image: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.12),
+        rgba(255, 255, 255, 0.02)
+    );
+}
+
+.card.custom-capsule .card-name {
+    font-size: 1.15rem;
 }
 
 .card-name {
@@ -348,6 +452,18 @@ body {
 
     .info-grid {
         grid-template-columns: 1fr;
+    }
+
+    .create-capsule-form {
+        grid-template-columns: 1fr;
+    }
+
+    .manage-capsule-row {
+        grid-template-columns: 1fr;
+    }
+
+    .manage-btn {
+        width: 100%;
     }
 
     .jar-layout {
