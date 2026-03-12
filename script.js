@@ -900,9 +900,37 @@ function slugifyCapsuleName(name) {
         .slice(0, 32);
 }
 
+async function loadCapsules() {
+  try {
+    const response = await fetch('capsules.json');
+    let capsules = await response.json();
+    const overridesKey = 'capsules:overrides';
+    const overrides = JSON.parse(localStorage.getItem(overridesKey) || '{}');
+    capsules = capsules.map(c => ({...c, ...overrides[c.id]}));
+    return capsules.filter(c => c.active !== false);
+  } catch (e) {
+    console.warn('Failed to load capsules.json:', e);
+    return [];
+  }
+}
+
+function renderDynamicGrid(capsules, cardGrid) {
+  cardGrid.innerHTML = '';
+  capsules.forEach(capsule => {
+    const card = document.createElement('a');
+    card.className = 'card';
+    card.href = `${capsule.dir}/${capsule.slug || capsule.id}.html`;
+    card.innerHTML = `
+      <span class="card-name">${capsule.name}</span>
+      <span class="card-meta">Open Capsule</span>
+    `;
+    cardGrid.appendChild(card);
+  });
+}
+
 function initHomePageFeatures() {
-    const cardGrid = document.querySelector("#cardGrid");
-    if (!cardGrid) return;
+  const cardGrid = document.querySelector("#cardGrid");
+  if (!cardGrid) return;
 
     const cards = () => Array.from(cardGrid.querySelectorAll(".card"));
     const randomCapsuleBtn = document.querySelector("#randomCapsuleBtn");
@@ -1000,65 +1028,113 @@ function initHomePageFeatures() {
         renderCustomCapsuleManager();
     }
 
-    function renderCustomCapsuleManager() {
+async function renderCapsuleManager() {
         if (!manageList) return;
-        manageList.innerHTML = "";
+        manageList.innerHTML = '';
 
-        const customCapsules = readCustomCapsules();
-        if (!customCapsules.length) {
-            const empty = document.createElement("p");
-            empty.className = "create-capsule-msg";
-            empty.textContent = "No custom capsules yet.";
-            manageList.appendChild(empty);
-            return;
-        }
+        const addNewBtn = document.createElement('button');
+        addNewBtn.className = 'action-btn';
+        addNewBtn.textContent = 'Add New Fixed Capsule';
+        addNewBtn.addEventListener('click', createNewCapsulePrompt);
+        manageList.appendChild(addNewBtn);
 
-        customCapsules.forEach((entry) => {
-            const row = document.createElement("div");
-            row.className = "manage-capsule-row";
+        // Fixed capsules
+        const fixedCapsules = await loadCapsules();
+        fixedCapsules.forEach(entry => {
+            const row = document.createElement('div');
+            row.className = 'manage-capsule-row';
+            row.dataset.capsuleType = 'fixed';
+            row.dataset.capsuleId = entry.id;
 
-            const input = document.createElement("input");
-            input.type = "text";
-            input.value = entry.name;
-            input.className = "manage-capsule-input";
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.value = entry.name;
+            nameInput.className = 'manage-capsule-input';
 
-            const renameBtn = document.createElement("button");
-            renameBtn.type = "button";
-            renameBtn.className = "manage-btn";
-            renameBtn.textContent = "Rename";
-
-            const deleteBtn = document.createElement("button");
-            deleteBtn.type = "button";
-            deleteBtn.className = "manage-btn danger";
-            deleteBtn.textContent = "Delete";
-
-            renameBtn.addEventListener("click", () => {
-                const renamed = renameCustomCapsule(entry.id, input.value);
-                if (!renamed) {
-                    if (createCapsuleMsg) {
-                        createCapsuleMsg.textContent = "Name cannot be empty.";
-                    }
-                    return;
-                }
-                renderCustomCapsules();
-                if (createCapsuleMsg) {
-                    createCapsuleMsg.textContent = "Capsule renamed.";
-                }
+            const themeSelect = document.createElement('select');
+            ['default', 'sunset', 'ocean', 'forest', 'lilac'].forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t;
+                opt.textContent = t.charAt(0).toUpperCase() + t.slice(1);
+                themeSelect.appendChild(opt);
             });
+            themeSelect.value = entry.theme || 'default';
 
-            deleteBtn.addEventListener("click", () => {
-                deleteCustomCapsule(entry.id);
-                renderCustomCapsules();
-                if (createCapsuleMsg) {
-                    createCapsuleMsg.textContent = "Capsule deleted.";
-                }
-            });
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'manage-btn';
+            saveBtn.textContent = 'Save';
 
-            row.appendChild(input);
-            row.appendChild(renameBtn);
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'manage-btn danger';
+            deleteBtn.textContent = 'Delete';
+
+            saveBtn.addEventListener('click', () => saveCapsuleOverride(entry.id, nameInput.value, themeSelect.value));
+            deleteBtn.addEventListener('click', () => deleteCapsule(entry.id));
+
+            row.appendChild(nameInput);
+            row.appendChild(themeSelect);
+            row.appendChild(saveBtn);
             row.appendChild(deleteBtn);
             manageList.appendChild(row);
         });
+
+        // Custom capsules
+        const customCapsules = readCustomCapsules();
+        customCapsules.forEach(entry => {
+            const row = document.createElement('div');
+            row.className = 'manage-capsule-row';
+            row.dataset.capsuleType = 'custom';
+            row.dataset.capsuleId = entry.id;
+
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.value = entry.name;
+            nameInput.className = 'manage-capsule-input';
+
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'manage-btn';
+            saveBtn.textContent = 'Save';
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'manage-btn danger';
+            deleteBtn.textContent = 'Delete';
+
+            saveBtn.addEventListener('click', () => {
+                renameCustomCapsule(entry.id, nameInput.value);
+                renderCapsuleManager();
+            });
+            deleteBtn.addEventListener('click', () => deleteCustomCapsule(entry.id));
+
+            row.appendChild(nameInput);
+            row.appendChild(saveBtn);
+            row.appendChild(deleteBtn);
+            manageList.appendChild(row);
+        });
+
+        if (!fixedCapsules.length && !customCapsules.length) {
+            const empty = document.createElement('p');
+            empty.className = 'create-capsule-msg';
+            empty.textContent = 'No capsules yet.';
+            manageList.appendChild(empty);
+        }
+    }
+
+    function saveCapsuleOverride(id, name, theme) {
+        const overridesKey = 'capsules:overrides';
+        const overrides = JSON.parse(localStorage.getItem(overridesKey) || '{}');
+        overrides[id] = { name, theme };
+        localStorage.setItem(overridesKey, JSON.stringify(overrides));
+        loadCapsules().then(capsules => renderDynamicGrid(capsules, cardGrid));
+    }
+
+    function deleteCapsule(id) {
+        if (!confirm('Delete this capsule page? (Soft delete from config)')) return;
+        const overridesKey = 'capsules:overrides';
+        const overrides = JSON.parse(localStorage.getItem(overridesKey) || '{}');
+        overrides[id] = { active: false };
+        localStorage.setItem(overridesKey, JSON.stringify(overrides));
+        loadCapsules().then(capsules => renderDynamicGrid(capsules, cardGrid));
+        renderCapsuleManager();
     }
 
     const prompts = [
@@ -1079,9 +1155,16 @@ function initHomePageFeatures() {
     const jarCountKey = "home:memory-jar-count";
 
     if (createCapsulePanel) {
-        const managerTitle = document.createElement("p");
-        managerTitle.className = "panel-kicker";
-        managerTitle.textContent = "Manage Custom Capsules";
+    const managerTitle = document.createElement("p");
+    managerTitle.className = "panel-kicker";
+    managerTitle.textContent = "Manage Capsules";
+
+    const newCapsuleBtn = document.createElement("button");
+    newCapsuleBtn.className = "action-btn";
+    newCapsuleBtn.textContent = "Add New Capsule";
+    newCapsuleBtn.type = "button";
+    newCapsuleBtn.onclick = createNewCapsulePrompt;
+    createCapsulePanel.appendChild(newCapsuleBtn);
 
         manageList = document.createElement("div");
         manageList.className = "manage-capsule-list";
@@ -1089,7 +1172,11 @@ function initHomePageFeatures() {
         createCapsulePanel.appendChild(manageList);
     }
 
-    renderCustomCapsules();
+    // Load and render capsules from config
+    loadCapsules().then(capsules => {
+      renderDynamicGrid(capsules, cardGrid);
+      renderCustomCapsules();
+    });
 
     if (todayDate) {
         todayDate.textContent = new Intl.DateTimeFormat("en-IN", {

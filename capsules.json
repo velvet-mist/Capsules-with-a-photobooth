@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "name": "1",
+    "slug": "1",
+    "dir": "1",
+    "theme": "default",
+    "active": true,
+    "photoboothPerson": "1"
+  },
+  {
+    "id": "2",
+    "name": "2",
+    "slug": "2",
+    "dir": "2",
+    "theme": "default",
+    "active": true,
+    "photoboothPerson": "2"
+  },
+  {
+    "id": "3",
+    "name": "3",
+    "slug": "3",
+    "dir": "4",
+    "theme": "default",
+    "active": true,
+    "photoboothPerson": "3"
+  },
+  {
+    "id": "group",
+    "name": "5",
+    "slug": "group",
+    "dir": "group",
+    "theme": "default",
+    "active": true,
+    "photoboothPerson": "5"
+  }
+]
