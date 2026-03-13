@@ -4,8 +4,71 @@ function goBack() {
         return;
     }
 
-    const fallback = new URL("../index.html", window.location.href);
+    const fallbackPath = document.body?.dataset?.homeFallback || "../index.html";
+    const fallback = new URL(fallbackPath, window.location.href);
     window.location.href = fallback.href;
+}
+
+const CUSTOM_CAPSULES_KEY = "home:custom-capsules:v2";
+const LEGACY_CUSTOM_CAPSULES_KEY = "home:custom-capsules:v1";
+const CUSTOM_CAPSULE_PAGE_PATH = "custom-capsule.html";
+
+function readCustomCapsules() {
+    try {
+        const current = JSON.parse(localStorage.getItem(CUSTOM_CAPSULES_KEY) || "null");
+        if (Array.isArray(current)) return current;
+
+        const legacy = JSON.parse(localStorage.getItem(LEGACY_CUSTOM_CAPSULES_KEY) || "[]");
+        if (!Array.isArray(legacy)) return [];
+
+        const migrated = legacy.map((entry) => ({
+            ...entry,
+            id: entry.id || `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+            person: entry.person || `capsule-${Math.random().toString(36).slice(2, 8)}`
+        }));
+        if (migrated.length) {
+            localStorage.setItem(CUSTOM_CAPSULES_KEY, JSON.stringify(migrated));
+        }
+        return migrated;
+    } catch (_error) {
+        return [];
+    }
+}
+
+function writeCustomCapsules(capsules) {
+    localStorage.setItem(CUSTOM_CAPSULES_KEY, JSON.stringify(capsules));
+}
+
+function getCustomCapsuleById(capsuleId) {
+    if (!capsuleId) return null;
+    return readCustomCapsules().find((entry) => entry.id === capsuleId) || null;
+}
+
+function getCustomCapsuleIdFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("id") || "";
+}
+
+function getCustomCapsuleStoragePrefix(capsuleId) {
+    return capsuleId ? `custom-capsule:${capsuleId}` : null;
+}
+
+function deleteCustomCapsuleStorage(capsuleId, person) {
+    const storagePrefix = getCustomCapsuleStoragePrefix(capsuleId);
+    [
+        `${storagePrefix}:uploaded-photos`,
+        `${storagePrefix}:spotify-embed`,
+        `${storagePrefix}:small-notes`,
+        `${storagePrefix}:video-links`,
+        `${storagePrefix}:open-when-pages`,
+        `${storagePrefix}:theme-vars`,
+        `photobooth:${person}`,
+        `photobooth:draft:${person || "guest"}`
+    ].forEach((key) => {
+        if (key && !key.includes("null") && !key.includes("undefined")) {
+            localStorage.removeItem(key);
+        }
+    });
 }
 
 function getPhotoboothPersonFromLink(link) {
@@ -99,14 +162,71 @@ function initPhotoboothUploadBridge() {
     });
 }
 
-initPhotoboothUploadBridge();
-
 function getCapsuleStoragePrefix() {
+    const customCapsuleId = getCustomCapsuleIdFromUrl();
+    if (customCapsuleId) {
+        return getCustomCapsuleStoragePrefix(customCapsuleId);
+    }
+
     const capsulePath = window.location.pathname.replace(/\/index\.html$/, "").replace(/\/$/, "");
     if (!capsulePath || capsulePath === "") return null;
     if (capsulePath === "/index.html" || capsulePath === "/") return null;
     if (!capsulePath.includes("/")) return null;
     return `capsule:${capsulePath}`;
+}
+
+function initCustomCapsulePage() {
+    const customPage = document.querySelector("[data-custom-capsule-page='1']");
+    if (!customPage) return;
+
+    const capsuleId = getCustomCapsuleIdFromUrl();
+    const capsule = getCustomCapsuleById(capsuleId);
+
+    if (!capsule) {
+        customPage.innerHTML = `
+            <header class="page-header">
+              <button class="back-btn" onclick="goBack()">Back</button>
+            </header>
+            <section class="card custom-empty-state">
+              <h2>Capsule not found</h2>
+              <p>This custom capsule was deleted or never existed on this device.</p>
+            </section>
+        `;
+        document.title = "Missing Capsule";
+        return;
+    }
+
+    document.title = `${capsule.name} | Capsule`;
+
+    const title = customPage.querySelector("[data-custom-capsule-name]");
+    const tagline = customPage.querySelector("[data-custom-capsule-tagline]");
+    const cover = customPage.querySelector("[data-custom-capsule-cover]");
+    const photoboothBtn = customPage.querySelector(".photobooth-btn");
+    const deleteBtn = customPage.querySelector("[data-delete-custom-capsule]");
+
+    if (title) title.textContent = capsule.name;
+    if (tagline) tagline.textContent = `A custom memory capsule for ${capsule.name}.`;
+    if (cover) {
+        if (capsule.photoDataUrl) {
+            cover.src = capsule.photoDataUrl;
+            cover.alt = `${capsule.name} cover`;
+            cover.hidden = false;
+        } else {
+            cover.hidden = true;
+        }
+    }
+    if (photoboothBtn) {
+        photoboothBtn.href = `photobooth/index.html?person=${encodeURIComponent(capsule.person)}&caption=${encodeURIComponent(`${capsule.name}'s Booth`)}`;
+    }
+    if (deleteBtn) {
+        deleteBtn.addEventListener("click", () => {
+            if (!confirm(`Delete ${capsule.name}'s custom capsule?`)) return;
+            const nextCapsules = readCustomCapsules().filter((entry) => entry.id !== capsule.id);
+            writeCustomCapsules(nextCapsules);
+            deleteCustomCapsuleStorage(capsule.id, capsule.person);
+            window.location.href = "index.html";
+        });
+    }
 }
 
 function createObjectFitImage(src, altText) {
@@ -890,6 +1010,8 @@ function initCapsuleMediaEditing() {
     }
 }
 
+initCustomCapsulePage();
+initPhotoboothUploadBridge();
 initCapsuleMediaEditing();
 
 function slugifyCapsuleName(name) {
@@ -948,20 +1070,14 @@ function initHomePageFeatures() {
     const capsulePhotoInput = document.querySelector("#capsulePhotoInput");
     const createCapsuleMsg = document.querySelector("#createCapsuleMsg");
     const createCapsulePanel = document.querySelector(".create-capsule-panel");
-    const customCapsulesKey = "home:custom-capsules:v1";
     let manageList = null;
 
-    function readCustomCapsules() {
-        try {
-            const parsed = JSON.parse(localStorage.getItem(customCapsulesKey) || "[]");
-            return Array.isArray(parsed) ? parsed : [];
-        } catch (_error) {
-            return [];
+    function createNewCapsulePrompt() {
+        createCapsuleForm?.scrollIntoView({ behavior: "smooth", block: "center" });
+        capsuleNameInput?.focus();
+        if (createCapsuleMsg) {
+            createCapsuleMsg.textContent = "Create a full custom capsule page below.";
         }
-    }
-
-    function writeCustomCapsules(capsules) {
-        localStorage.setItem(customCapsulesKey, JSON.stringify(capsules));
     }
 
     function renameCustomCapsule(capsuleId, nextName) {
@@ -978,8 +1094,12 @@ function initHomePageFeatures() {
 
     function deleteCustomCapsule(capsuleId) {
         const customCapsules = readCustomCapsules();
+        const target = customCapsules.find((entry) => entry.id === capsuleId);
         const nextCapsules = customCapsules.filter((entry) => entry.id !== capsuleId);
         writeCustomCapsules(nextCapsules);
+        if (target) {
+            deleteCustomCapsuleStorage(target.id, target.person);
+        }
     }
 
     function updateCapsuleCount() {
@@ -992,7 +1112,7 @@ function initHomePageFeatures() {
         const card = document.createElement("a");
         card.className = "card custom-capsule";
         card.dataset.customCapsule = "1";
-        card.href = `photobooth/index.html?person=${encodeURIComponent(entry.person)}&caption=${encodeURIComponent(`${entry.name}'s Booth`)}`;
+        card.href = `${CUSTOM_CAPSULE_PAGE_PATH}?id=${encodeURIComponent(entry.id)}`;
 
         const thumb = document.createElement("span");
         thumb.className = "card-thumb";
@@ -1101,9 +1221,15 @@ async function renderCapsuleManager() {
 
             saveBtn.addEventListener('click', () => {
                 renameCustomCapsule(entry.id, nameInput.value);
+                renderCustomCapsules();
                 renderCapsuleManager();
             });
-            deleteBtn.addEventListener('click', () => deleteCustomCapsule(entry.id));
+            deleteBtn.addEventListener('click', () => {
+                if (!confirm(`Delete ${entry.name}'s custom capsule?`)) return;
+                deleteCustomCapsule(entry.id);
+                renderCustomCapsules();
+                renderCapsuleManager();
+            });
 
             row.appendChild(nameInput);
             row.appendChild(saveBtn);
@@ -1266,7 +1392,7 @@ async function renderCapsuleManager() {
             createCapsuleForm.reset();
             renderCustomCapsules();
             if (createCapsuleMsg) {
-                createCapsuleMsg.textContent = `Added capsule for ${name}.`;
+                createCapsuleMsg.textContent = `Added a full capsule page for ${name}.`;
             }
         });
     }

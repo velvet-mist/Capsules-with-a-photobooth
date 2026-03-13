@@ -3,18 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3 | Capsule</title>
-  <link rel="stylesheet" href="../subpage.css" />
-  <link rel="stylesheet" href="amishe.css" />
+  <title>Custom Capsule</title>
+  <link rel="stylesheet" href="subpage.css" />
 </head>
-<body>
-  <main class="page">
+<body data-home-fallback="index.html">
+  <main class="page" data-custom-capsule-page="1">
     <header class="page-header">
-      <button class="back-btn" onclick="goBack()">Back</button>
+      <div class="page-header-actions">
+        <button class="back-btn" onclick="goBack()">Back</button>
+        <button class="back-btn danger-btn" type="button" data-delete-custom-capsule>Delete Capsule</button>
+      </div>
       <section class="hero">
-        <p class="kicker">Memory Capsule</p>
-        <h1>3</h1>
-        <p class="tagline">Your space for photos, songs, and keepsakes.</p>
+        <p class="kicker">Custom Memory Capsule</p>
+        <h1 data-custom-capsule-name>Custom Capsule</h1>
+        <p class="tagline" data-custom-capsule-tagline>Your space for photos, songs, and keepsakes.</p>
+        <img class="hero-cover" data-custom-capsule-cover hidden />
       </section>
     </header>
 
@@ -22,7 +25,7 @@
       <section class="card photobooth-section">
         <h2>Photobooth</h2>
         <p>Add photos here, then drag and drop them into your photobooth template.</p>
-        <a class="photobooth-btn" href="../photobooth/index.html?person=3&caption=3%27s%20Booth">Open Photobooth</a>
+        <a class="photobooth-btn" href="photobooth/index.html">Open Photobooth</a>
       </section>
 
       <section class="card music-section">
@@ -30,7 +33,7 @@
         <p>A track for this page.</p>
         <iframe
           class="music-player"
-          src="https://open.spotify.com/embed/track/0eFMbKCRw8KByXyWBw8WO7?utm_source=generator"
+          src="https://open.spotify.com/embed/track/0CCkRb9Ga6nluTRiAejwCw?utm_source=generator"
           height="200"
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy">
@@ -88,6 +91,6 @@
     </section>
   </main>
 
-  <script src="../script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

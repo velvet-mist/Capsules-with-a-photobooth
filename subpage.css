@@ -24,6 +24,12 @@ body {
   gap: 14px;
 }
 
+.page-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .hero {
   border: 1px solid var(--panel-border);
   border-radius: 20px;
@@ -70,6 +76,22 @@ body {
   cursor: pointer;
 }
 
+.danger-btn {
+  background: rgba(153, 27, 27, 0.18);
+  border-color: rgba(153, 27, 27, 0.45);
+}
+
+.hero-cover {
+  display: block;
+  width: min(220px, 100%);
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  margin-top: 16px;
+  border-radius: 18px;
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.14);
+}
+
 .content-grid {
   display: grid;
   gap: 16px;
@@ -82,6 +104,10 @@ body {
   padding: 16px;
   background: var(--panel-bg);
   box-shadow: 0 14px 24px rgba(0, 0, 0, 0.12);
+}
+
+.custom-empty-state {
+  text-align: center;
 }
 
 .card h2 {
