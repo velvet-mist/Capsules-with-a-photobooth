@@ -183,16 +183,29 @@ function initCustomCapsulePage() {
     const capsule = getCustomCapsuleById(capsuleId);
 
     if (!capsule) {
-        customPage.innerHTML = `
-            <header class="page-header">
-              <button class="back-btn" onclick="goBack()">Back</button>
-            </header>
-            <section class="card custom-empty-state">
-              <h2>Capsule not found</h2>
-              <p>This custom capsule was deleted or never existed on this device.</p>
-            </section>
-        `;
+        const header = document.createElement("header");
+        header.className = "page-header";
+
+        const backButton = document.createElement("button");
+        backButton.className = "back-btn";
+        backButton.type = "button";
+        backButton.dataset.goBack = "1";
+        backButton.textContent = "Back";
+        header.appendChild(backButton);
+
+        const emptyState = document.createElement("section");
+        emptyState.className = "card custom-empty-state";
+
+        const heading = document.createElement("h2");
+        heading.textContent = "Capsule not found";
+
+        const message = document.createElement("p");
+        message.textContent = "This custom capsule was deleted or never existed on this device.";
+
+        emptyState.append(heading, message);
+        customPage.replaceChildren(header, emptyState);
         document.title = "Missing Capsule";
+        initBackButtons(customPage);
         return;
     }
 
@@ -227,6 +240,14 @@ function initCustomCapsulePage() {
             window.location.href = "index.html";
         });
     }
+}
+
+function initBackButtons(root = document) {
+    root.querySelectorAll("[data-go-back]").forEach((button) => {
+        if (button.dataset.backBound === "1") return;
+        button.dataset.backBound = "1";
+        button.addEventListener("click", goBack);
+    });
 }
 
 function createObjectFitImage(src, altText) {
@@ -1010,6 +1031,7 @@ function initCapsuleMediaEditing() {
     }
 }
 
+initBackButtons();
 initCustomCapsulePage();
 initPhotoboothUploadBridge();
 initCapsuleMediaEditing();
@@ -1040,12 +1062,17 @@ function renderDynamicGrid(capsules, cardGrid) {
   cardGrid.innerHTML = '';
   capsules.forEach(capsule => {
     const card = document.createElement('a');
+    const cardName = document.createElement('span');
+    const cardMeta = document.createElement('span');
+
     card.className = 'card';
     card.href = `${capsule.dir}/${capsule.slug || capsule.id}.html`;
-    card.innerHTML = `
-      <span class="card-name">${capsule.name}</span>
-      <span class="card-meta">Open Capsule</span>
-    `;
+    cardName.className = 'card-name';
+    cardName.textContent = capsule.name;
+    cardMeta.className = 'card-meta';
+    cardMeta.textContent = 'Open Capsule';
+
+    card.append(cardName, cardMeta);
     cardGrid.appendChild(card);
   });
 }

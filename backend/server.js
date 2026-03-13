@@ -13,6 +13,8 @@ const PASSWORD_RESET_TTL_MS = 60 * 60 * 1000;
 const TOKEN_SECRET = process.env.AUTH_SECRET || "replace-me-in-production";
 const BASE_URL = process.env.BASE_URL || "";
 const DATABASE_URL = process.env.DATABASE_URL || "";
+const NODE_ENV = process.env.NODE_ENV || "development";
+const IS_PRODUCTION = NODE_ENV === "production";
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -137,6 +139,75 @@ function sendText(res, status, body) {
     "Content-Type": "text/plain; charset=utf-8"
   });
   res.end(body);
+}
+
+function getAllowedOrigins() {
+  const origins = new Set();
+
+  if (BASE_URL) {
+    try {
+      origins.add(new URL(BASE_URL).origin);
+    } catch (_error) {
+      throw new Error("BASE_URL must be a valid absolute URL.");
+    }
+  }
+
+  if (!IS_PRODUCTION) {
+    origins.add("http://localhost:8787");
+    origins.add("http://127.0.0.1:8787");
+  }
+
+  return origins;
+}
+
+function applySecurityHeaders(req, res, allowedOrigins) {
+  const origin = req.headers.origin || "";
+
+  res.setHeader("Vary", "Origin");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  res.setHeader("Cross-Origin-Resource-Policy", "same-origin");
+  res.setHeader(
+    "Content-Security-Policy",
+    [
+      "default-src 'self'",
+      "script-src 'self'",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: blob: https:",
+      "font-src 'self' data:",
+      "connect-src 'self'",
+      "frame-src https://open.spotify.com",
+      "media-src 'self' data: blob: https:",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "frame-ancestors 'self'"
+    ].join("; ")
+  );
+
+  if (origin && allowedOrigins.has(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  }
+}
+
+function validateProductionConfig() {
+  if (!IS_PRODUCTION) return;
+
+  if (TOKEN_SECRET === "replace-me-in-production") {
+    throw new Error("AUTH_SECRET must be set to a strong secret in production.");
+  }
+
+  if (!BASE_URL) {
+    throw new Error("BASE_URL must be set in production.");
+  }
+
+  if (!DATABASE_URL) {
+    throw new Error("DATABASE_URL must be set in production.");
+  }
 }
 
 function readJsonBody(req) {
@@ -961,15 +1032,15 @@ function serveStatic(req, res, pathname) {
 }
 
 (async function start() {
+  validateProductionConfig();
   const store = await createStore();
+  const allowedOrigins = getAllowedOrigins();
 
   const server = http.createServer(async (req, res) => {
     const reqUrl = new URL(req.url, `http://${req.headers.host}`);
     const pathname = decodeURIComponent(reqUrl.pathname);
 
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+    applySecurityHeaders(req, res, allowedOrigins);
 
     if (req.method === "OPTIONS") {
       res.writeHead(204);
