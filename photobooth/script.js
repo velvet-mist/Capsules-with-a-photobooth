@@ -23,20 +23,6 @@ const photoCount = document.getElementById("photoCount");
 const dropzone = document.querySelector(".dropzone");
 const personLabel = document.getElementById("personLabel");
 
-const authNameInput = document.getElementById("authName");
-const authEmailInput = document.getElementById("authEmail");
-const authPasswordInput = document.getElementById("authPassword");
-const authTokenInput = document.getElementById("authTokenInput");
-const newPasswordInput = document.getElementById("newPasswordInput");
-const signupBtn = document.getElementById("signupBtn");
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const resendVerifyBtn = document.getElementById("resendVerifyBtn");
-const requestResetBtn = document.getElementById("requestResetBtn");
-const verifyTokenBtn = document.getElementById("verifyTokenBtn");
-const resetPasswordBtn = document.getElementById("resetPasswordBtn");
-const authStatus = document.getElementById("authStatus");
-
 const saveCloudBtn = document.getElementById("saveCloudBtn");
 const copyLinkBtn = document.getElementById("copyLinkBtn");
 const projectSelect = document.getElementById("projectSelect");
@@ -78,7 +64,7 @@ function setStatus(message) {
 }
 
 function setAuthStatus(message) {
-  authStatus.textContent = message || "";
+  if (statusMsg) statusMsg.textContent = message || "";
 }
 
 function updateAuthUI() {
@@ -94,10 +80,6 @@ function updateAuthUI() {
   saveCloudBtn.disabled = !isSignedIn || !isVerified;
   copyLinkBtn.disabled = !isSignedIn || !isVerified;
   loadCloudBtn.disabled = !isSignedIn;
-  logoutBtn.disabled = !isSignedIn;
-  signupBtn.disabled = isSignedIn;
-  loginBtn.disabled = isSignedIn;
-  resendVerifyBtn.disabled = !isSignedIn;
 }
 
 function setFrameImage(frameIndex, dataUrl, photoIndex = null) {
@@ -416,54 +398,6 @@ function extractToken(value) {
   }
 }
 
-async function signup() {
-  const name = authNameInput.value.trim();
-  const email = authEmailInput.value.trim();
-  const password = authPasswordInput.value;
-  if (!email || !password) {
-    setAuthStatus("Email and password are required.");
-    return;
-  }
-
-  const data = await apiRequest("/auth/signup", {
-    method: "POST",
-    body: { name, email, password }
-  });
-
-  authToken = data.token;
-  localStorage.setItem(AUTH_TOKEN_KEY, authToken);
-  currentUser = data.user;
-  updateAuthUI();
-  await loadMyProjects();
-
-  if (data.verificationPlaceholderUrl) {
-    authTokenInput.value = data.verificationPlaceholderUrl;
-  }
-
-  setStatus("Account created. Verify your email to enable cloud saving.");
-}
-
-async function login() {
-  const email = authEmailInput.value.trim();
-  const password = authPasswordInput.value;
-  if (!email || !password) {
-    setAuthStatus("Email and password are required.");
-    return;
-  }
-
-  const data = await apiRequest("/auth/login", {
-    method: "POST",
-    body: { email, password }
-  });
-
-  authToken = data.token;
-  localStorage.setItem(AUTH_TOKEN_KEY, authToken);
-  currentUser = data.user;
-  updateAuthUI();
-  await loadMyProjects();
-  setStatus(currentUser.emailVerified ? "Signed in." : "Signed in. Please verify email.");
-}
-
 function logout() {
   authToken = "";
   currentUser = null;
@@ -488,78 +422,6 @@ async function restoreSession() {
   } catch (_error) {
     logout();
   }
-}
-
-async function requestEmailVerification() {
-  const email = authEmailInput.value.trim();
-  const data = await apiRequest("/auth/request-email-verification", {
-    method: "POST",
-    body: { email }
-  });
-
-  if (data.verificationPlaceholderUrl) {
-    authTokenInput.value = data.verificationPlaceholderUrl;
-    setStatus("Verification link generated (placeholder). Use token input to verify.");
-  } else {
-    setStatus("If the account exists, a verification email has been sent.");
-  }
-}
-
-async function verifyEmailWithToken() {
-  const token = extractToken(authTokenInput.value);
-  if (!token) {
-    setStatus("Paste a verification token first.");
-    return;
-  }
-
-  await apiRequest("/auth/verify-email", {
-    method: "POST",
-    body: { token }
-  });
-
-  setStatus("Email verified.");
-  if (currentUser) {
-    const data = await apiRequest("/auth/me");
-    currentUser = data.user;
-    updateAuthUI();
-  }
-}
-
-async function requestPasswordReset() {
-  const email = authEmailInput.value.trim();
-  if (!email) {
-    setStatus("Enter your email first.");
-    return;
-  }
-
-  const data = await apiRequest("/auth/request-password-reset", {
-    method: "POST",
-    body: { email }
-  });
-
-  if (data.resetPlaceholderUrl) {
-    authTokenInput.value = data.resetPlaceholderUrl;
-    setStatus("Reset link generated (placeholder). Paste token and set new password.");
-  } else {
-    setStatus("If the account exists, a reset email has been sent.");
-  }
-}
-
-async function resetPasswordWithToken() {
-  const token = extractToken(authTokenInput.value);
-  const newPassword = newPasswordInput.value;
-  if (!token || !newPassword) {
-    setStatus("Token and new password are required.");
-    return;
-  }
-
-  await apiRequest("/auth/reset-password", {
-    method: "POST",
-    body: { token, newPassword }
-  });
-
-  newPasswordInput.value = "";
-  setStatus("Password reset successfully. You can sign in now.");
 }
 
 async function loadMyProjects() {
@@ -720,56 +582,6 @@ shareBtn.addEventListener("click", async () => {
   }
 });
 
-signupBtn.addEventListener("click", async () => {
-  try {
-    await signup();
-  } catch (error) {
-    setAuthStatus(error.message);
-  }
-});
-
-loginBtn.addEventListener("click", async () => {
-  try {
-    await login();
-  } catch (error) {
-    setAuthStatus(error.message);
-  }
-});
-
-logoutBtn.addEventListener("click", () => logout());
-
-resendVerifyBtn.addEventListener("click", async () => {
-  try {
-    await requestEmailVerification();
-  } catch (error) {
-    setStatus(error.message);
-  }
-});
-
-verifyTokenBtn.addEventListener("click", async () => {
-  try {
-    await verifyEmailWithToken();
-  } catch (error) {
-    setStatus(error.message);
-  }
-});
-
-requestResetBtn.addEventListener("click", async () => {
-  try {
-    await requestPasswordReset();
-  } catch (error) {
-    setStatus(error.message);
-  }
-});
-
-resetPasswordBtn.addEventListener("click", async () => {
-  try {
-    await resetPasswordWithToken();
-  } catch (error) {
-    setStatus(error.message);
-  }
-});
-
 saveCloudBtn.addEventListener("click", async () => {
   try {
     await saveToCloud();
@@ -815,29 +627,26 @@ readyForAutosave = true;
 updateAuthUI();
 
 (async function initCloud() {
+  const projectId = params.get("project");
+  if (!authToken && !projectId) {
+    const returnTo = `${window.location.pathname}${window.location.search}`;
+    window.location.href = `/index.html?returnTo=${encodeURIComponent(returnTo)}`;
+    return;
+  }
+
   await restoreSession();
 
-  const projectId = params.get("project");
+  if (!currentUser && !projectId) {
+    const returnTo = `${window.location.pathname}${window.location.search}`;
+    window.location.href = `/index.html?returnTo=${encodeURIComponent(returnTo)}`;
+    return;
+  }
+
   if (projectId) {
     try {
       await loadCloudProjectById(projectId);
     } catch (error) {
       setStatus(`Could not load shared project: ${error.message}`);
-    }
-  }
-
-  const tokenFromQuery = params.get("token");
-  const modeFromQuery = params.get("mode");
-  if (tokenFromQuery && modeFromQuery === "verify-email") {
-    authTokenInput.value = tokenFromQuery;
-    try {
-      await verifyEmailWithToken();
-      params.delete("token");
-      params.delete("mode");
-      const nextUrl = `${window.location.pathname}?${params.toString()}`.replace(/\?$/, "");
-      window.history.replaceState({}, "", nextUrl || window.location.pathname);
-    } catch (_error) {
-      // keep token in input for manual retry
     }
   }
 })();

@@ -42,6 +42,42 @@
             </article>
         </section>
 
+        <section class="panel auth-panel" aria-label="Start with account">
+            <p class="panel-kicker">Start Here</p>
+            <p class="auth-copy">Sign in first, then make a capsule for someone else and share it from the builder.</p>
+            <div class="auth-grid">
+                <input id="authName" type="text" placeholder="Your name (optional)" />
+                <input id="authEmail" type="email" placeholder="Email address" autocomplete="email" />
+                <input
+                    id="authPassword"
+                    type="password"
+                    placeholder="Password (min 8 chars)"
+                    autocomplete="current-password"
+                />
+            </div>
+            <div class="action-row">
+                <button id="signupBtn" type="button" class="action-btn">Create Account</button>
+                <button id="loginBtn" type="button" class="action-btn">Sign In</button>
+                <button id="logoutBtn" type="button" class="action-btn">Sign Out</button>
+                <button id="resendVerifyBtn" type="button" class="action-btn">Send Verify Link</button>
+                <button id="requestResetBtn" type="button" class="action-btn">Send Reset Link</button>
+            </div>
+            <div class="auth-grid auth-grid-secondary">
+                <input id="authTokenInput" type="text" placeholder="Paste verification/reset token or full link" />
+                <input
+                    id="newPasswordInput"
+                    type="password"
+                    placeholder="New password for reset"
+                    autocomplete="new-password"
+                />
+            </div>
+            <div class="action-row">
+                <button id="verifyTokenBtn" type="button" class="action-btn">Verify Token</button>
+                <button id="resetPasswordBtn" type="button" class="action-btn">Reset Password</button>
+            </div>
+            <p id="authStatus" class="create-capsule-msg">Not signed in.</p>
+        </section>
+
         <section class="panel create-capsule-panel" aria-label="Create capsule">
             <p class="panel-kicker">Create Capsule</p>
             <form id="createCapsuleForm" class="create-capsule-form">
@@ -99,6 +135,6 @@
         </section>
     </main>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

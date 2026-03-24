@@ -713,7 +713,7 @@ async function handleApi(req, res, pathname, store) {
       EMAIL_VERIFY_TTL_MS
     );
 
-    const verificationPlaceholderUrl = buildAbsoluteUrl(req, "/photobooth/index.html", {
+    const verificationPlaceholderUrl = buildAbsoluteUrl(req, "/index.html", {
       mode: "verify-email",
       token: verifyTokenRaw
     });
@@ -784,7 +784,7 @@ async function handleApi(req, res, pathname, store) {
       EMAIL_VERIFY_TTL_MS
     );
 
-    const verificationPlaceholderUrl = buildAbsoluteUrl(req, "/photobooth/index.html", {
+    const verificationPlaceholderUrl = buildAbsoluteUrl(req, "/index.html", {
       mode: "verify-email",
       token: verifyTokenRaw
     });
@@ -843,7 +843,7 @@ async function handleApi(req, res, pathname, store) {
       PASSWORD_RESET_TTL_MS
     );
 
-    const resetPlaceholderUrl = buildAbsoluteUrl(req, "/photobooth/index.html", {
+    const resetPlaceholderUrl = buildAbsoluteUrl(req, "/index.html", {
       mode: "reset-password",
       token: resetTokenRaw
     });
